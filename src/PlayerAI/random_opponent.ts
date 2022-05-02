@@ -1,8 +1,7 @@
 import log from "loglevel";
 import { IOpponent } from ".";
-import Game, { IGame, Move } from "../model";
-import { Player } from "../model";
-import { available_moves } from "./utils";
+import { IGame, Move } from "../model";
+import { available_moves, my_symbol } from "./utils";
 
 
 export default class RandomOpponent implements IOpponent{
@@ -10,7 +9,7 @@ export default class RandomOpponent implements IOpponent{
 
         log.debug("Random opponent making a move");
 
-        let me = game.last_move == Player.O ? Player.X : Player.O;
+        let me = my_symbol(game.last_move);
 
         let available = available_moves(game);
         log.trace(`Available moves ${available}`);
