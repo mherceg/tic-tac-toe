@@ -1,4 +1,4 @@
-import { IGame } from "../model";
+import { IGame, Player } from "../model";
 
 export function available_moves(game: IGame): [number, number][] {
 
@@ -15,4 +15,8 @@ export function available_moves(game: IGame): [number, number][] {
     }
 
     return Array.from(available);
+}
+
+export function my_symbol(last_move: Player) : Player{
+    return last_move == Player.O ? Player.X : Player.O;
 }

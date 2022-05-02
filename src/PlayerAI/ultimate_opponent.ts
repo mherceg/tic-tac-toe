@@ -1,16 +1,17 @@
 import log from "loglevel";
-import TicTacToeEngine, { Player as Fplayer } from "tic-tac-toe-minimax-engine";
+import TicTacToeEngine, { Player} from "tic-tac-toe-minimax-engine";
 import { IOpponent } from ".";
-import { IGame, Move, Player } from "../model";
+import { IGame, Move } from "../model";
+import { my_symbol } from "./utils";
 
 
 export default class UltimateOpponent implements IOpponent{
     move(game: IGame): IGame {
         log.debug("Ultimate opponent making a move");
 
-        let me = game.last_move == Player.O ? Player.X : Player.O;
+        let me = my_symbol(game.last_move);
 
-        const aigame = new TicTacToeEngine(Fplayer.PLAYER_ONE);
+        const aigame = new TicTacToeEngine(Player.PLAYER_ONE);
         for (let m of game.moves){
             aigame.makeNextMove(m.x, m.y);
         }

@@ -1,7 +1,7 @@
 import log from "loglevel";
 import { IOpponent } from ".";
-import model, { IGame, Move, Player } from "../model";
-import { available_moves } from "./utils";
+import { IGame, Move } from "../model";
+import { available_moves, my_symbol } from "./utils";
 
 
 export default class TryToWinOpponent implements IOpponent{
@@ -9,7 +9,7 @@ export default class TryToWinOpponent implements IOpponent{
 
         log.debug("Try to win opponent making a move");
 
-        let me = game.last_move == Player.O ? Player.X : Player.O;
+        let me = my_symbol(game.last_move);
 
         let available = available_moves(game);
         log.trace(`Available moves ${available}`);
