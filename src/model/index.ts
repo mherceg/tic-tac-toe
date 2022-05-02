@@ -1,3 +1,4 @@
+import { maxHeaderSize } from "http";
 import log from "loglevel";
 import { mapping } from "../PlayerAI";
 import { createAndFillTwoDArray } from "../utils";
@@ -36,6 +37,7 @@ export interface IGame {
 
     // move returns the winner if the player has won in this move, null otherwise
     move(m: Move, automatic: boolean | undefined): Player | null
+    check_winner(m: Move): Player | null
 }
 
 export default class Game implements IGame{
@@ -59,20 +61,32 @@ export default class Game implements IGame{
     }
 
     move(m: Move, automatic: boolean = false): Player {
+        log.debug(m);
         if (m.x < 0 || m.y < 0 || m.x >= this.size || m.y >= this.size){
+            log.warn(`Move requested out of bounds`);
             throw new RangeError(`Coordinates of the move have to be between 0 and ${this.size}`);
         }
-        log.debug(m);
+        if (this.elements[m.x][m.y] !== null){
+            log.warn(`Move requested at occupied location`);
+            throw new RangeError(`Position ${m.x}, ${m.y} is already occupied by ${this.elements[m.x][m.y]}`);
+        }
         this.moves.push(m);
         this.elements[m.x][m.y] = m.player;
+        
         log.trace(this.elements);
         log.debug(this.moves);
         this.last_move = m.player;
         let winner = this.check_winner(m);
-        log.trace(`Winner is ${winner}`);
+
+        if (this.moves.length == this.size ** 2){
+            this.isFinished = true;
+            log.debug(`Game ${this.id} finished, no moves left`)
+        }
+
         if (winner != null){
             this.isFinished = true;
             this.winner = winner;
+            log.debug(`Winner of game ${this.id} is ${winner}`);
         } else {
             if (!automatic && this.opponent != Opponent.singlePlayer){
                 log.debug("Making an automated move");
@@ -80,20 +94,21 @@ export default class Game implements IGame{
                 opponent.move(this);
             }
         }
+
         return this.winner;
     }
 
-    private check_winner(m: Move): Player | null{
+    public check_winner(m: Move): Player | null{
         let DX = [-1, -1, 0, 1, 1, 1, 0, -1];
         let DY = [0, 1, 1, 1, 0, -1, -1, -1];
 
         for (let dir = 0;  dir < Math.floor(DX.length/2); ++dir){
             let count = 1;
-            let x = m.x;
-            let y = m.y;
             for (let d of [0, 4]){
                 let dx = DX[(dir + d)%DX.length];
                 let dy = DY[(dir + d)%DY.length];
+                let x = m.x + dx;
+                let y = m.y + dy;
                 while (x >= 0 && y >= 0 && x < this.size && y < this.size){
                     if (this.elements[x][y] == m.player){
                         count++;
@@ -104,7 +119,7 @@ export default class Game implements IGame{
                     y += dy;
                 }
             }
-            log.trace(`Direction ${dir}, count ${count}`);
+            log.debug(`Direction ${dir}, count ${count}`);
             if (count == this.size){
                 return m.player;
             }

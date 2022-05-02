@@ -6,7 +6,7 @@ console.log(process.env.NODE_ENV);
 if (process.env.NODE_ENV === "prod"){
     log.setLevel("error");
 } else if (process.env.NODE_ENV === "dev"){
-    log.setLevel("info");
+    log.setLevel("debug");
     log.info("Running in dev mode");
 } else if (process.env.NODE_ENV === "trace"){
     log.setLevel("trace");
