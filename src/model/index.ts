@@ -9,7 +9,7 @@ export enum Player {
 }
 
 export enum Opponent {
-    singlePlayer = 0,
+    multiPlayer = 0,
     easy = 1,
     medium = 2,
     hard = 3
@@ -28,29 +28,30 @@ export class Move{
 }
 
 export interface IGame {
+    id: string,
     last_move: Player,
     size: number,
     winner: Player,
-    isFinished: boolean,
+    isFinished: Boolean,
     opponent: Opponent,
     moves: Move[],
 
     // move returns the winner if the player has won in this move, null otherwise
-    move(m: Move, automatic: boolean | undefined): Player | null
+    move(m: Move, automatic: Boolean | undefined): Player | null
     check_winner(m: Move): Player | null
 }
 
 export default class Game implements IGame{
-    public id!: number;
+    public id!: string;
     public size: number;
     private elements: Player[][];
     public last_move: Player;
     public winner: Player;
-    public isFinished: boolean;
+    public isFinished: Boolean;
     public moves: Move[];
     opponent: Opponent;
 
-    constructor(id: number, opponent: Opponent = Opponent.singlePlayer, size: number = 3){
+    constructor(id: string, opponent: Opponent = Opponent.multiPlayer, size: number = 3){
         log.info(`New game created with id ${id} and size ${size}`);
         this.id = id;
         this.size = size;
@@ -60,7 +61,7 @@ export default class Game implements IGame{
         this.elements = createAndFillTwoDArray(size, size, null);
     }
 
-    move(m: Move, automatic: boolean = false): Player {
+    move(m: Move, automatic: Boolean = false): Player {
         log.debug(m);
         if (m.x < 0 || m.y < 0 || m.x >= this.size || m.y >= this.size){
             log.warn(`Move requested out of bounds`);
@@ -88,7 +89,7 @@ export default class Game implements IGame{
             this.winner = winner;
             log.debug(`Winner of game ${this.id} is ${winner}`);
         } else {
-            if (!automatic && this.opponent != Opponent.singlePlayer){
+            if (!automatic && this.opponent != Opponent.multiPlayer){
                 log.debug("Making an automated move");
                 let opponent = new mapping[this.opponent]();
                 opponent.move(this);

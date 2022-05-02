@@ -15,4 +15,9 @@ if (process.env.NODE_ENV === "prod"){
     log.setLevel("error")
 }
 
-main(new SimpleStorage());
+var port = 4000;
+if (process.env.PORT !== undefined){
+    port = parseInt(process.env.PORT);
+}
+
+main(new SimpleStorage(), port);
