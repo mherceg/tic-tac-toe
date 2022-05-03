@@ -11,7 +11,7 @@ export default class SimpleStorage implements IStorage{
         this.games = new Map<string, Game>();
     }
     get_game(key: string): Game {
-        return this.games[key];
+        return this.games.get(key);
     }
     get_all_games(): Game[] {
         return Array.from(this.games.values());

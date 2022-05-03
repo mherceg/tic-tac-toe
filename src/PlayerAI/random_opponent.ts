@@ -9,7 +9,7 @@ export default class RandomOpponent implements IOpponent{
 
         log.debug("Random opponent making a move");
 
-        let me = my_symbol(game.last_move);
+        let me = my_symbol(game.lastMove);
 
         let available = available_moves(game);
         log.trace(`Available moves ${available}`);

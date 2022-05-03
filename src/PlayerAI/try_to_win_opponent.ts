@@ -9,7 +9,7 @@ export default class TryToWinOpponent implements IOpponent{
 
         log.debug("Try to win opponent making a move");
 
-        let me = my_symbol(game.last_move);
+        let me = my_symbol(game.lastMove);
 
         let available = available_moves(game);
         log.trace(`Available moves ${available}`);
@@ -26,8 +26,8 @@ export default class TryToWinOpponent implements IOpponent{
 
         //Try not to lose
         for (let position of available){
-            let m = new Move(position[0], position[1], game.last_move);
-            if (game.check_winner(m) === game.last_move) {
+            let m = new Move(position[0], position[1], game.lastMove);
+            if (game.check_winner(m) === game.lastMove) {
                 log.debug(`Losing move found ${m}`);
                 m.player = me;
                 game.move(m, true);

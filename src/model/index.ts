@@ -29,7 +29,7 @@ export class Move{
 
 export interface IGame {
     id: string,
-    last_move: Player,
+    lastMove: Player,
     size: number,
     winner: Player,
     isFinished: Boolean,
@@ -39,13 +39,14 @@ export interface IGame {
     // move returns the winner if the player has won in this move, null otherwise
     move(m: Move, automatic: Boolean | undefined): Player | null
     check_winner(m: Move): Player | null
+    opponent_start(): void
 }
 
 export default class Game implements IGame{
     public id!: string;
     public size: number;
     private elements: Player[][];
-    public last_move: Player;
+    public lastMove: Player;
     public winner: Player;
     public isFinished: Boolean;
     public moves: Move[];
@@ -76,7 +77,7 @@ export default class Game implements IGame{
         
         log.trace(this.elements);
         log.debug(this.moves);
-        this.last_move = m.player;
+        this.lastMove = m.player;
         let winner = this.check_winner(m);
 
         if (this.moves.length == this.size ** 2){
@@ -127,6 +128,12 @@ export default class Game implements IGame{
         }
 
         return null;
+    }
+
+    public opponent_start(): void {
+        this.lastMove = Player.O;
+        let opponent = new mapping[this.opponent]();
+        opponent.move(this);
     }
     
 }

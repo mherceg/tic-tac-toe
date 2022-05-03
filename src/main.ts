@@ -34,13 +34,14 @@ var schema = buildSchema(`
     type Mutation {
         create_game(opponent: String): String
         move(id: String, x: Int, y: Int, p: String): String
+        opponent_start(id: String): String
     },
     type Game {
         id: String
         size: Int
         opponent: String
-        last_move: String
-        is_finished: Boolean
+        lastMove: String
+        isFinished: Boolean
         moves: [Move]
         elements: [[String]]
     },
@@ -72,8 +73,9 @@ const main = async(storage: IStorage, port: number) => {
             log.trace(storage.games);
             return storage.games.values();
         },
-        create_game: (opponent: string) => {
+        create_game: (args) => {
             console.debug(`Creating game ${opponent}`);
+            var opponent = args["opponent"];
             var opp = Opponent.multiPlayer;
             if (opponent == "easy" || opponent == "1") {
                 opp = Opponent.easy;
@@ -86,7 +88,11 @@ const main = async(storage: IStorage, port: number) => {
             storage.add_game(game);
             return game.id;
         },
-        move: (id: string, x: number, y: number, p: string) => {
+        move: (args) => {
+            var id = args["id"];
+            var x = args["x"];
+            var y = args["y"];
+            var p = args["p"];
             var game = storage.get_game(id);
             var player: Player;
             if (p === "X"){
@@ -96,6 +102,12 @@ const main = async(storage: IStorage, port: number) => {
             }
             game.move(new Move(x, y, player));
             return id;
+        },
+        opponent_start: (args) => {
+            log.info(`Opponent start requested for ${id}`);
+            var id = args["id"];
+            var game = storage.get_game(id);
+            game.opponent_start();
         }
     };
 

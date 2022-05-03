@@ -9,7 +9,7 @@ export default class UltimateOpponent implements IOpponent{
     move(game: IGame): IGame {
         log.debug("Ultimate opponent making a move");
 
-        let me = my_symbol(game.last_move);
+        let me = my_symbol(game.lastMove);
 
         const aigame = new TicTacToeEngine(Player.PLAYER_ONE);
         for (let m of game.moves){
