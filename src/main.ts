@@ -30,6 +30,7 @@ var schema = buildSchema(`
     type Query {
         game_ids: [ID]
         games: [Game]
+        get_history(id: String): [Move]
     },
     type Mutation {
         create_game(opponent: String): String
@@ -73,8 +74,14 @@ const main = async(storage: IStorage, port: number) => {
             log.trace(storage.games);
             return storage.games.values();
         },
+        get_history: (args) => {
+            log.info(`History requested for id ${id}`);
+            var id = args["id"];
+            let game = storage.get_game(id);
+            return game.moves;
+        },
         create_game: (args) => {
-            console.debug(`Creating game ${opponent}`);
+            log.debug(`Creating game ${opponent}`);
             var opponent = args["opponent"];
             var opp = Opponent.multiPlayer;
             if (opponent == "easy" || opponent == "1") {
@@ -104,8 +111,8 @@ const main = async(storage: IStorage, port: number) => {
             return id;
         },
         opponent_start: (args) => {
-            log.info(`Opponent start requested for ${id}`);
             var id = args["id"];
+            log.info(`Opponent start requested for ${id}`);
             var game = storage.get_game(id);
             game.opponent_start();
         }
@@ -118,7 +125,7 @@ const main = async(storage: IStorage, port: number) => {
         graphiql: true,
     }));
     app.listen(port);
-    console.log(`Running a GraphQL API server at http://localhost:${port}/graphql`);
+    log.info(`Running a GraphQL API server at http://localhost:${port}/graphql`);
 
 }
 
