@@ -13,15 +13,6 @@ var cors = require('cors')
 
 const main = async(storage: IStorage, port: number) => {
 
-    let game = new Game(storage.get_id(), Opponent.medium);
-    storage.add_game(game);
-    console.log(game.move(new Move(1, 1, Player.X)));
-    console.log(game.moves);
-    // console.log(game.move(new Move(0, 0, Player.X)));
-    // console.log(game.moves);
-    // console.log(game.move(new Move(1, 2, Player.X)));
-    // console.log(game.moves);
-
     var app = express();
     app.use(cors());
     app.set("port", port);
