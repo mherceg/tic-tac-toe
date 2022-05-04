@@ -7,14 +7,13 @@ import { makeExecutableSchema } from '@graphql-tools/schema';
 import { WebSocketServer } from 'ws';
 import { useServer } from 'graphql-ws/lib/use/ws';
 import express from "express";
-import { PubSub } from 'graphql-subscriptions';
 import { ApolloServer } from 'apollo-server-express';
+import { subscriptions } from "./utils";
+import { PubSub } from "graphql-subscriptions";
 
 var cors = require('cors')
-
-const pubsub = new PubSub();
-
 const { gql } = require('apollo-server');
+const pubsub = new PubSub();
 
 const typeDefs = gql`
     type Query {
@@ -29,7 +28,8 @@ const typeDefs = gql`
     }
     type Subscription {
         game_created: String
-        hello: String
+        join_game: Move
+        results: String
     }
     type Game {
         id: String
@@ -116,22 +116,27 @@ const main = async(storage: IStorage, port: number) => {
             }
         },
         Subscription: {
-            game_created:{
+            game_created: {
                 subscribe: () => {
-                    log.info("Subscribed");
-                    return pubsub.asyncIterator(['GAMES']);
+                    log.info("Subscribed to games");
+                    return pubsub.asyncIterator(subscriptions.GAMES());
                 }
             },
-            hello: {
-                // Example using an async generator
-                subscribe: async function* () {
-                  for await (const word of ["Hello", "Bonjour", "Ciao"]) {
-                    yield { hello: word };
-                  }
-                },
-              },
+            join_game: {
+                subscribe: (parent, args) => {
+                    let id = args.get('id');
+                    log.info(`Subscribed to game ${id}`)
+                    return pubsub.asyncIterator(subscriptions.JOIN_GAME(id));
+                }
+            },
+            results: {
+                subscribe: () => {
+                    log.info("subscribed to results");
+                    return pubsub.asyncIterator(subscriptions.RESULTS());
+                }
+            }
         }
-    };
+    }
 
     var app = express();
     app.use(cors());

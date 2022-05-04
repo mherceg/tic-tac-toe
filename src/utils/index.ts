@@ -13,3 +13,9 @@ export function createAndFillTwoDArray(
         Array.from({ length:columns }, ()=> defaultValue)
      ))
   }
+
+export const subscriptions = {
+  GAMES: () => "GAMES",
+  JOIN_GAME: (id: string) =>  `JOIN GAME ${id}`,
+  RESULTS: () => "RESULTS",
+}
