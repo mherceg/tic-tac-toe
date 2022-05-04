@@ -71,7 +71,7 @@ export function getSchema(storage){
                 }
                 let game = new Game(storage.get_id(), opp);
                 storage.add_game(game);
-                pubsub.publish("GAMES", {game_created: game.id});
+                pubsub.publish(subscriptions.GAMES(), {game_created: game.id});
                 return game.id;
             },
             move(parent, args){
@@ -86,7 +86,19 @@ export function getSchema(storage){
                 } else if (p === "O"){
                     player = Player.O;
                 }
+                let previous_moves = game.moves.length;
                 game.move(new Move(x, y, player));
+                if (game.isFinished){
+                    if (game.winner === Player.X){
+                        storage.scoreX++;
+                    } else {
+                        storage.scoreY++;
+                    }
+                    pubsub.publish(subscriptions.RESULTS(), `Score X:Y ${storage.scoreX}:${storage.scoreY}`);
+                }
+                for (let i = previous_moves; i < game.moves.length; ++i){
+                    pubsub.publish(subscriptions.JOIN_GAME(game.id), game.moves[i]);
+                }
                 return id;
             },
             opponent_start(parent, args){
