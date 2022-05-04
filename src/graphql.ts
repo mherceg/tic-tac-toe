@@ -9,7 +9,6 @@ const pubsub = new PubSub();
 export function getSchema(storage){
     const typeDefs = gql`
         type Query {
-            game_ids: [ID]
             games: [Game]
             get_history(id: String): [Move]
         }
@@ -41,10 +40,6 @@ export function getSchema(storage){
 
     const resolvers = {
         Query: {
-            game_ids(){
-                log.info("Requested game ids");
-                return storage.games.keys();
-            },
             games(){
                 log.info("Games requested");
                 log.trace(storage.games);
