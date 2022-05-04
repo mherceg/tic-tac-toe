@@ -12,7 +12,6 @@ export default class RandomOpponent implements IOpponent{
         let me = my_symbol(game.lastMove);
 
         let available = available_moves(game);
-        log.trace(`Available moves ${available}`);
         let selected = available[Math.floor(Math.random() * available.length)];
         log.debug(`Selected move ${selected}`);
         game.move(new Move(selected[0], selected[1], me), true);

@@ -11,6 +11,9 @@ export default class SimpleStorage implements IStorage{
         this.games = new Map<string, Game>();
     }
     get_game(key: string): Game {
+        if (!this.games.has(key)){
+            throw new RangeError(`Game with id ${key} doesn't exist`);
+        }
         return this.games.get(key);
     }
     get_all_games(): Game[] {
@@ -18,6 +21,9 @@ export default class SimpleStorage implements IStorage{
     }
 
     add_game(game: Game): void {
+        if (this.games.has(game.id)){
+            throw new RangeError(`Game with id ${game.id} already exists in storage`);
+        }
         this.games.set(game.id, game);
     }
 

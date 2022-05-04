@@ -10,7 +10,6 @@ class point{
         this.y = y;
         
     }
-
 }
 
 //Inneficient implementation, O(size^2) time & space complexity. Make sure to improve if using larger boards.
@@ -21,7 +20,6 @@ export function available_moves(game: IGame): [number, number][] {
     for (let m of game.moves){
         available[m.x][m.y] = false;
     }
-
     let ret : [number, number][] = new Array<[number, number]>();
     for (let i = 0; i < game.size; ++i){
         for (let j = 0; j < game.size; ++j){
@@ -30,7 +28,6 @@ export function available_moves(game: IGame): [number, number][] {
             }
         }
     }
-
     return ret;
 }
 

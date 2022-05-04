@@ -52,18 +52,18 @@ export default class Game implements IGame{
     public moves: Move[];
     opponent: Opponent;
 
-    constructor(id: string, opponent: Opponent = Opponent.multiPlayer, size: number = 3){
-        log.info(`New game created with id ${id} and size ${size}`);
+    constructor(id: string, opponent: Opponent = Opponent.multiPlayer){
+        log.info(`New game created with id ${id}`);
         this.id = id;
-        this.size = size;
+        this.size = 3;
         this.isFinished = false;
         this.moves = [];
         this.opponent = opponent;
-        this.elements = createAndFillTwoDArray(size, size, null);
+        this.elements = createAndFillTwoDArray(this.size, this.size, null);
     }
 
     move(m: Move, automatic: Boolean = false): Player {
-        log.debug(m);
+        log.debug(`Making move ${m} on game ${this.id}`);
         if (m.x < 0 || m.y < 0 || m.x >= this.size || m.y >= this.size){
             log.warn(`Move requested out of bounds`);
             throw new RangeError(`Coordinates of the move have to be between 0 and ${this.size}`);
@@ -75,26 +75,22 @@ export default class Game implements IGame{
         this.moves.push(m);
         this.elements[m.x][m.y] = m.player;
         
-        log.trace(this.elements);
-        log.debug(this.moves);
+        log.trace(this.id, this.elements);
+        log.debug("Moves", this.id, this.moves);
         this.lastMove = m.player;
         let winner = this.check_winner(m);
-
-        if (this.moves.length == this.size ** 2){
-            this.isFinished = true;
-            log.debug(`Game ${this.id} finished, no moves left`)
-        }
 
         if (winner != null){
             this.isFinished = true;
             this.winner = winner;
             log.debug(`Winner of game ${this.id} is ${winner}`);
-        } else {
-            if (!automatic && this.opponent != Opponent.multiPlayer){
-                log.debug("Making an automated move");
-                let opponent = new mapping[this.opponent]();
-                opponent.move(this);
-            }
+        } else if (this.moves.length == this.size ** 2){
+            this.isFinished = true;
+            log.debug(`Game ${this.id} finished, no moves left`)
+        } else if (!automatic && this.opponent != Opponent.multiPlayer){
+            log.debug("Making an automated move");
+            let opponent = new mapping[this.opponent]();
+            opponent.move(this);
         }
 
         return this.winner;
@@ -130,6 +126,10 @@ export default class Game implements IGame{
     }
 
     public opponent_start(): void {
+        if (this.lastMove !== undefined){
+            log.warn(`Can't start ${this.id}, already started`);
+            throw new RangeError(`Game ${this.id} already started`);
+        }
         this.lastMove = Player.O;
         let opponent = new mapping[this.opponent]();
         opponent.move(this);

@@ -7,7 +7,7 @@ import { available_moves, my_symbol } from "./utils";
 export default class TryToWinOpponent implements IOpponent{
     move(game: IGame): IGame {
 
-        log.debug("Try to win opponent making a move");
+        log.debug(`"Medium" opponent making a move`);
 
         let me = my_symbol(game.lastMove);
 
