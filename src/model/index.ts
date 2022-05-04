@@ -72,6 +72,10 @@ export default class Game implements IGame{
             log.warn(`Move requested at occupied location`);
             throw new RangeError(`Position ${m.x}, ${m.y} is already occupied by "${this.elements[m.x][m.y]}"`);
         }
+        if (m.player === this.lastMove){
+            log.warn(`Same player trying to play again`);
+            throw new RangeError(`Same player can't play twice in a row. Wait your turn.`);
+        }
         this.moves.push(m);
         this.elements[m.x][m.y] = m.player;
         
