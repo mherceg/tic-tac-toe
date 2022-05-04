@@ -85,6 +85,8 @@ export function getSchema(storage){
                     player = Player.X;
                 } else if (p === "O"){
                     player = Player.O;
+                } else {
+                    throw new RangeError("Player must be X or O");
                 }
                 let previous_moves = game.moves.length;
                 game.move(new Move(x, y, player));
