@@ -19,7 +19,7 @@ export function getSchema(storage){
         }
         type Subscription {
             game_created: String
-            join_game: Move
+            join_game(id: string): Move
             results: String
         }
         type Game {
