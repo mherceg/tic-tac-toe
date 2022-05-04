@@ -1,2 +1,5 @@
 # tic-tac-toe
-node.js tic tac toe game 
+
+Please bear in mind that this is the author's first ever node.js project
+
+
