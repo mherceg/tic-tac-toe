@@ -85,7 +85,7 @@ export function getSchema(storage){
                 }
                 let previous_moves = game.moves.length;
                 game.move(new Move(x, y, player));
-                if (game.isFinished){
+                if (game.winner !== undefined){
                     if (game.winner === Player.X){
                         storage.scoreX++;
                     } else {
