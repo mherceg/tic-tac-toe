@@ -70,7 +70,7 @@ export default class Game implements IGame{
         }
         if (this.elements[m.x][m.y] !== null){
             log.warn(`Move requested at occupied location`);
-            throw new RangeError(`Position ${m.x}, ${m.y} is already occupied by ${this.elements[m.x][m.y]}`);
+            throw new RangeError(`Position ${m.x}, ${m.y} is already occupied by "${this.elements[m.x][m.y]}"`);
         }
         this.moves.push(m);
         this.elements[m.x][m.y] = m.player;
@@ -83,7 +83,7 @@ export default class Game implements IGame{
         if (winner != null){
             this.isFinished = true;
             this.winner = winner;
-            log.debug(`Winner of game ${this.id} is ${winner}`);
+            log.debug(`Winner of game "${this.id}" is ${winner}`);
         } else if (this.moves.length == this.size ** 2){
             this.isFinished = true;
             log.debug(`Game ${this.id} finished, no moves left`)
@@ -128,7 +128,11 @@ export default class Game implements IGame{
     public opponent_start(): void {
         if (this.lastMove !== undefined){
             log.warn(`Can't start ${this.id}, already started`);
-            throw new RangeError(`Game ${this.id} already started`);
+            throw new RangeError(`Game "${this.id}" already started`);
+        }
+        if (this.opponent == Opponent.multiPlayer){
+            log.warn(`Auto start requested for multiplayer game ${this.id}`);
+            throw new RangeError(`Game "${this.id}" is multi player game. I can't start it.`);
         }
         this.lastMove = Player.O;
         let opponent = new mapping[this.opponent]();
