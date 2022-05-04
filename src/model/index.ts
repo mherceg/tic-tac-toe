@@ -121,7 +121,6 @@ export default class Game implements IGame{
                     y += dy;
                 }
             }
-            log.debug(`Direction ${dir}, count ${count}`);
             if (count == this.size){
                 return m.player;
             }
